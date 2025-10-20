@@ -1,4 +1,4 @@
-# pyproject.toml (FINAL, VERIFIED WORKING VERSION)
+# pyproject.toml (FINAL, FINAL, FINAL, FINAL VERSION FOR DEPENDENCY STABILITY)
 
 [tool.poetry]
 name = "automl-agent-crew"
@@ -9,19 +9,24 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<=3.13"
+# Python compatibility range (Kept as previously fixed)
+python = ">=3.11,<=3.13" 
 
-# CrewAI (latest available on PyPI)
-crewai = "^0.33.4"
+# CRITICAL FIX: Lock CrewAI to a known, stable, and published version (e.g., 0.33.3)
+crewai = "0.33.3" 
 
-# LangChain compatibility
-langchain = "0.2.15"
-langchain-community = "0.2.14"
+# CrewAI Tools (Locked to a known published version)
+crewai-tools = "0.22.5" 
 
-# Supporting libs
-pydantic = ">=2.5,<3.0"
-python-dotenv = "^1.0"
-imaplib2 = "^2.5"
+# LangChain dependencies (Locked to compatible V0.2+ range)
+langchain = ">=0.2.0,<0.3.0"
+langchain-community = ">=0.2.6,<0.3.0" 
+
+# Other dependencies
+pydantic = ">=2.0,<2.8" 
+python-dotenv = ">=1.0"
+imaplib2 = "^2.5" 
+
 
 [build-system]
 requires = ["poetry-core"]
