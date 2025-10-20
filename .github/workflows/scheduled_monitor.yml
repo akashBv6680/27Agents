@@ -1,3 +1,4 @@
+# .github/workflows/scheduled_monitor.yml (FINAL CORRECTED VERSION)
 name: Scheduled Monitoring and AutoML Crew (AutoGen)
 
 on:
@@ -17,7 +18,7 @@ jobs:
       IMAP_SERVER: ${{ secrets.IMAP_SERVER }}
       IMAP_PORT: ${{ secrets.IMAP_PORT }}
       IMAP_USERNAME: ${{ secrets.IMAP_USERNAME }}
-      IMAP_APP_PASSWORD: ${{ secrets.IMAP_PASSWORD }} # Ensure this matches your secret name
+      IMAP_APP_PASSWORD: ${{ secrets.IMAP_PASSWORD }} 
 
       # INJECT SECRETS FOR COMMUNICATION/MOCK
       CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
@@ -34,13 +35,12 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        # We stick to a stable Python version
         python-version: '3.11'
 
     - name: Install dependencies (Pip Install)
       run: |
         # CRITICAL FIX: Install autogen with the [openai] extra dependency 
-        # to ensure the LLM client is correctly set up.
+        # to correctly set up the LLM client, even for local LLMs.
         pip install "autogen[openai]>=0.2.14" python-dotenv pydantic requests imaplib2
         
     - name: Run Data Science Crew (AutoGen)
