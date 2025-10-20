@@ -1,4 +1,4 @@
-# pyproject.toml (FINAL VERSION FOR PYTHON COMPATIBILITY)
+# pyproject.toml (FINAL, FINAL VERSION FOR DEPENDENCY STABILITY)
 
 [tool.poetry]
 name = "automl-agent-crew"
@@ -9,15 +9,15 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-# CRITICAL FIX: Explicitly set the Python version range as recommended by the error
-# This tells Poetry to only look for dependencies that work within this range.
+# Python compatibility range
 python = ">=3.11,<=3.13" 
 
-# Keeping the constraints for stability, although the Python fix should resolve the core issue
+# CrewAI and LangChain dependencies locked to compatible versions:
 crewai = ">=0.30,<0.35" 
 crewai-tools = ">=0.12"
-langchain = ">=0.1"
-langchain-community = ">=0.1"
+langchain = ">=0.1,<0.2"
+# CRITICAL FIX: Lock to the version range required by CrewAI to avoid conflict
+langchain-community = ">=0.0.38,<0.1.0" 
 pydantic = ">=2.0,<2.8" 
 python-dotenv = ">=1.0"
 imaplib2 = "^2.5" 
