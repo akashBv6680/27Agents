@@ -134,7 +134,7 @@ class EmailCommunicatorTool(BaseTool):
     description: str = "Tool to compose and 'send' (simulate) an email to the client in simple, conversational English."
 
     def _run(self, recipient: str, subject: str, body: str) -> str:
-        # Gets CLIENT_EMAIL from environment, which is set via GitHub Secret
+        # Gets CLIENT_EMAIL from environment
         final_recipient = os.getenv("CLIENT_EMAIL", recipient)
         
         log_file = "automation_logs/email_log.txt"
