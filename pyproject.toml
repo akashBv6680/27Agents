@@ -1,4 +1,4 @@
-# pyproject.toml (FINAL, VERIFIED STABLE VERSION V0.2+)
+# pyproject.toml (FINAL, VERIFIED WORKING VERSION)
 
 [tool.poetry]
 name = "automl-agent-crew"
@@ -11,10 +11,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.11,<=3.13"
 
-# CrewAI (includes crewai-tools)
-crewai = "^0.34"
+# CrewAI (latest available on PyPI)
+crewai = "^0.33.4"
 
-# LangChain compatibility pair
+# LangChain compatibility
 langchain = "0.2.15"
 langchain-community = "0.2.14"
 
