@@ -19,7 +19,7 @@ autogen_group_chat = GroupChat(
     speaker_selection_method="auto"
 )
 
-# CRITICAL FIX: Use the MANAGER_LLM_CONFIG which excludes tools
+# Manager uses the LLM_CONFIG that EXCLUDES tools
 manager = GroupChatManager(
     groupchat=autogen_group_chat,
     llm_config=MANAGER_LLM_CONFIG,
