@@ -26,9 +26,9 @@ class GitHubFileCreatorTool(BaseTool):
         except Exception as e:
             return f"ERROR: Failed to simulate local file creation: {e}"
 
-        # 2. Simulate GitHub status check 
-        repo_owner = os.getenv("GITHUB_REPO_OWNER", "MOCK_OWNER")
-        repo_name = os.getenv("GITHUB_REPO_NAME", "MOCK_REPO")
+        # 2. Simulate GitHub status check (USING RENAMED ENV VARS)
+        repo_owner = os.getenv("REPO_OWNER", "MOCK_OWNER")
+        repo_name = os.getenv("REPO_NAME", "MOCK_REPO")
         
         return (
             f"SUCCESS: File '{file_path}' created/updated locally. "
