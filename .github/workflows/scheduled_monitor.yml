@@ -1,5 +1,5 @@
 # .github/workflows/scheduled_monitor.yml
-name: Scheduled Monitoring and AutoML Crew
+name: Scheduled Monitoring and AutoML Crew (AutoGen)
 
 on:
   # Schedule: Runs the workflow every 5 minutes
@@ -14,7 +14,7 @@ jobs:
     
     # Define environment variables needed by the Python script
     env:
-      OLLAMA_BASE_URL: "http://localhost:11434"
+      # We no longer need OLLAMA_BASE_URL, but we keep the secrets
       
       # INJECT SECRETS FOR IMAP CONNECTION
       IMAP_SERVER: ${{ secrets.IMAP_SERVER }}
@@ -26,9 +26,9 @@ jobs:
       CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
       
       # INJECT SECRETS FOR GITHUB TOOL (USING SECURE, RENAMED SECRETS)
-      CREW_COMMIT_TOKEN: ${{ secrets.CREW_COMMIT_TOKEN }} # Renamed GITHUB_TOKEN
-      REPO_OWNER: ${{ secrets.REPO_OWNER }}                 # Renamed GITHUB_REPO_OWNER
-      REPO_NAME: ${{ secrets.REPO_NAME }}                   # Renamed GITHUB_REPO_NAME
+      CREW_COMMIT_TOKEN: ${{ secrets.CREW_COMMIT_TOKEN }}
+      REPO_OWNER: ${{ secrets.REPO_OWNER }}
+      REPO_NAME: ${{ secrets.REPO_NAME }}
 
     steps:
     - name: Checkout Repository
@@ -37,23 +37,15 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
+        # We stick to a stable Python version
         python-version: '3.11'
 
-    - name: Install dependencies
+    - name: Install dependencies (Pip Install)
       run: |
-        pip install poetry
-        # Requires pyproject.toml in the root directory
-        poetry install --no-root
+        # Use pip to install required packages, avoiding Poetry conflicts
+        pip install autogen>=0.2.14 python-dotenv pydantic requests imaplib2
         
-    - name: Pull and Run Ollama/Mistral LLM Service
+    - name: Run Data Science Crew (AutoGen)
       run: |
-        # Start a local Ollama service in the background
-        docker pull mistral
-        docker run -d -v /usr/bin/ollama:/usr/bin/ollama -p 11434:11434 --name ollama-server ollama serve
-        # Wait a sufficient time for the service to start
-        sleep 45 
-        
-    - name: Run Data Science Crew
-      run: |
-        # Execute the main crew script
-        python crew.py
+        # Execute the main autogen script
+        python autogen_workflow.py
