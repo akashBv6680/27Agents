@@ -1,4 +1,4 @@
-# pyproject.toml (FINAL, FINAL, FINAL, FINAL VERSION FOR DEPENDENCY STABILITY)
+# pyproject.toml (LAST ATTEMPT AT DEPENDENCY STABILITY)
 
 [tool.poetry]
 name = "automl-agent-crew"
@@ -12,11 +12,11 @@ readme = "README.md"
 # Python compatibility range (Kept as previously fixed)
 python = ">=3.11,<=3.13" 
 
-# CRITICAL FIX: Lock CrewAI to a known, stable, and published version (e.g., 0.33.3)
-crewai = "0.33.3" 
+# CrewAI: Downgrade slightly to 0.33.1 (a common published version)
+crewai = "0.33.1" 
 
-# CrewAI Tools (Locked to a known published version)
-crewai-tools = "0.22.5" 
+# CRITICAL FIX: Lock CrewAI-Tools to the start of the minor release
+crewai-tools = "0.22.0" 
 
 # LangChain dependencies (Locked to compatible V0.2+ range)
 langchain = ">=0.2.0,<0.3.0"
