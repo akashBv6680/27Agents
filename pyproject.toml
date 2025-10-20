@@ -1,4 +1,4 @@
-# pyproject.toml (FINAL VERSION FOR PYTHON 3.11 STABILITY)
+# pyproject.toml (FINAL VERSION FOR PYTHON COMPATIBILITY)
 
 [tool.poetry]
 name = "automl-agent-crew"
@@ -9,16 +9,16 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-# 1. Project is explicitly set to Python 3.11 (matches your GitHub Action)
-python = "^3.11" 
+# CRITICAL FIX: Explicitly set the Python version range as recommended by the error
+# This tells Poetry to only look for dependencies that work within this range.
+python = ">=3.11,<=3.13" 
 
-# 2. Lock down key dependencies to known stable versions on 3.11:
-#    (CrewAI < 0.35 and Pydantic < 2.8 often resolve dependency conflicts best)
+# Keeping the constraints for stability, although the Python fix should resolve the core issue
 crewai = ">=0.30,<0.35" 
 crewai-tools = ">=0.12"
 langchain = ">=0.1"
 langchain-community = ">=0.1"
-pydantic = ">=2.0,<2.8" # Constraining Pydantic to a version less than 2.8 for better 3.11 compatibility
+pydantic = ">=2.0,<2.8" 
 python-dotenv = ">=1.0"
 imaplib2 = "^2.5" 
 
