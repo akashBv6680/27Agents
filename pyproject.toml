@@ -12,11 +12,10 @@ readme = "README.md"
 # Python compatibility range (Kept as previously fixed)
 python = ">=3.11,<=3.13" 
 
-# CrewAI: Downgrade slightly to 0.33.1 (a common published version)
-crewai = "0.33.1" 
-
-# CRITICAL FIX: Lock CrewAI-Tools to the start of the minor release
-crewai-tools = "0.22.0" 
+# FIX: Use caret constraints on the minor versions (e.g., ^0.33 means use 0.33.x)
+# This forces Poetry to find the latest published patch version.
+crewai = "^0.33.3" 
+crewai-tools = "^0.22.0" 
 
 # LangChain dependencies (Locked to compatible V0.2+ range)
 langchain = ">=0.2.0,<0.3.0"
