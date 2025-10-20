@@ -1,0 +1,27 @@
+# pyproject.toml
+
+[tool.poetry]
+name = "automl-agent-crew"
+version = "0.1.0"
+description = "A 27-agent AutoML and monitoring crew built with CrewAI."
+authors = ["Akash Vishnu <akashvishnu6680@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+crewai = ">=0.30"
+crewai-tools = ">=0.12"
+langchain = ">=0.1"
+langchain-community = ">=0.1"
+pydantic = ">=2.0"
+python-dotenv = ">=1.0"
+# For the IMAP/Email functionality
+imaplib2 = "^2.5" # A robust IMAP client if standard imaplib fails
+# No need for the standard requests/urllib3 as crewai_tools handles web communication
+# Add any other libraries your tools might eventually need (e.g., pandas, numpy for real data)
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
