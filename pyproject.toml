@@ -1,4 +1,4 @@
-# pyproject.toml (FINAL, FINAL VERSION FOR DEPENDENCY STABILITY V0.2+)
+# pyproject.toml (FINAL, CLEAN VERSION)
 
 [tool.poetry]
 name = "automl-agent-crew"
@@ -9,17 +9,10 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-# Python compatibility range (Kept to satisfy the GitHub runner and CrewAI limits)
 python = ">=3.11,<=3.13"
-
-# CrewAI (latest stable; includes crewai-tools functionality)
 crewai = "^0.34"
-
-# LangChain versions compatible with CrewAI v0.34+
 langchain = "0.2.12"
 langchain-community = "0.2.12"
-
-# Pydantic and utilities (compatible with CrewAI + LangChain)
 pydantic = ">=2.5,<3.0"
 python-dotenv = "^1.0"
 imaplib2 = "^2.5"
