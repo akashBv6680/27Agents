@@ -1,5 +1,5 @@
 # .github/workflows/scheduled_monitor.yml
-name: Scheduled Monitoring and Forecast Crew
+name: Scheduled Monitoring and AutoML Crew
 
 on:
   # Schedule: Runs the workflow every 5 minutes (Cron job equivalent)
@@ -25,10 +25,10 @@ jobs:
       # INJECT SECRETS FOR COMMUNICATION/MOCK
       CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
       
-      # INJECT SECRETS FOR GITHUB TOOL
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_REPO_OWNER: ${{ secrets.GITHUB_REPO_OWNER }}
-      GITHUB_REPO_NAME: ${{ secrets.GITHUB_REPO_NAME }}
+      # INJECT SECRETS FOR GITHUB TOOL (USING SECURE, RENAMED SECRETS)
+      CREW_COMMIT_TOKEN: ${{ secrets.CREW_COMMIT_TOKEN }}
+      REPO_OWNER: ${{ secrets.REPO_OWNER }}
+      REPO_NAME: ${{ secrets.REPO_NAME }}
 
     steps:
     - name: Checkout Repository
@@ -49,8 +49,8 @@ jobs:
         # Start a local Ollama service in the background
         docker pull mistral
         docker run -d -v /usr/bin/ollama:/usr/bin/ollama -p 11434:11434 --name ollama-server ollama serve
-        # Wait a moment for the service to start
-        sleep 10 
+        # Wait a sufficient time for the service to start (increased for stability)
+        sleep 45 
         
     - name: Run Data Science Crew
       run: |
