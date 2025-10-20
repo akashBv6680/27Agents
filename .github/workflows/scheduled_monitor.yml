@@ -1,0 +1,58 @@
+# .github/workflows/scheduled_monitor.yml
+name: Scheduled Monitoring and Forecast Crew
+
+on:
+  # Schedule: Runs the workflow every 5 minutes (Cron job equivalent)
+  schedule:
+    - cron: '*/5 * * * *'
+  # Allows manual run from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  run_data_science_crew:
+    runs-on: ubuntu-latest
+    
+    # Define environment variables needed by the Python script
+    env:
+      OLLAMA_BASE_URL: "http://localhost:11434"
+      
+      # INJECT SECRETS FOR IMAP CONNECTION
+      IMAP_SERVER: ${{ secrets.IMAP_SERVER }}
+      IMAP_PORT: ${{ secrets.IMAP_PORT }}
+      IMAP_USERNAME: ${{ secrets.IMAP_USERNAME }}
+      IMAP_APP_PASSWORD: ${{ secrets.IMAP_APP_PASSWORD }}
+      
+      # INJECT SECRETS FOR COMMUNICATION/MOCK
+      CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
+      
+      # INJECT SECRETS FOR GITHUB TOOL
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPO_OWNER: ${{ secrets.GITHUB_REPO_OWNER }}
+      GITHUB_REPO_NAME: ${{ secrets.GITHUB_REPO_NAME }}
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install poetry
+        poetry install --no-root
+        
+    - name: Pull and Run Ollama/Mistral LLM Service
+      run: |
+        # Start a local Ollama service in the background
+        docker pull mistral
+        docker run -d -v /usr/bin/ollama:/usr/bin/ollama -p 11434:11434 --name ollama-server ollama serve
+        # Wait a moment for the service to start
+        sleep 10 
+        
+    - name: Run Data Science Crew
+      run: |
+        # Execute the main crew script
+        python crew.py
