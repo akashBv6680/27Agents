@@ -1,4 +1,4 @@
-# autogen_config.py (AutoGen Configuration)
+# autogen_config.py (AutoGen Configuration - FINAL)
 import os
 from autogen import UserProxyAgent, AssistantAgent
 from tools import email_checker, github_file_creator
@@ -22,7 +22,6 @@ LLM_CONFIG_MOCK = {
         email_checker.data_processor_function,
         email_checker.email_communicator_function,
         github_file_creator.github_commit_function,
-        # We will wrap the read_knowledge_tool logic directly into the agents' prompts
     ]
 }
 
@@ -32,16 +31,24 @@ LLM_CONFIG_MOCK = {
 class AutoGenToolAgent(AssistantAgent):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Ensure the agents have access to the tool definitions
-        self.register_function(email_checker.email_check_function)
-        self.register_function(email_checker.data_processor_function)
-        self.register_function(email_checker.email_communicator_function)
-        self.register_function(github_file_creator.github_commit_function)
+        
+        # CRITICAL FIX: Define tools as a dictionary (name: function) before registering
+        tool_functions = {
+            "email_check_function": email_checker.email_check_function,
+            "data_processor_function": email_checker.data_processor_function,
+            "email_communicator_function": email_checker.email_communicator_function,
+            "github_commit_function": github_file_creator.github_commit_function,
+            # We will wrap the read_knowledge_tool logic directly into the agents' prompts
+        }
+        
+        # Register the tools using the dictionary, resolving the AttributeError
+        self.register_function(tool_functions)
 
 
 # --- Project Management Team (5 Agents) ---
 project_manager = UserProxyAgent(
     name="Executive_Project_Lead",
+    # The 'UserProxyAgent' acts as the initiator and code executor (if code_execution_config=True)
     system_message="Define project scope, ensure all dependencies are met, and manage the task flow. Your first action is to instruct the Inbox_Monitor.",
     code_execution_config=False, # Project Manager does not execute code
     human_input_mode="NEVER"
@@ -58,9 +65,6 @@ client_liaison = AutoGenToolAgent(
     system_message="Translate technical outcomes into simple, conversational English. Use the `email_communicator_function` tool to simulate sending the final report email.",
     llm_config=LLM_CONFIG_MOCK
 )
-
-# ... (We define the core roles as AssistantAgents and the UserProxyAgent is the 'Task Initiator')
-# Due to the large number of agents, we define the critical path agents and group the rest for simplicity.
 
 # --- Data Acquisition Team (Core 2 Agents) ---
 data_ingestor = AutoGenToolAgent(
@@ -96,7 +100,6 @@ reporter_git_manager = AutoGenToolAgent(
 )
 
 # --- Group the rest of the 27+ roles into a single specialized Assistant Agent for Autogen ---
-# In Autogen, the LLM-AssistantAgent simulates the actions of all specialized sub-agents.
 specialized_automl_assistant = AssistantAgent(
     name="Specialized_AutoML_Assistant",
     system_message="You are the combined expertise of 20+ specialized agents (Auditors, Deployers, Validators, Tuners, all Trainers). You answer questions delegated by other agents using your vast knowledge base to provide detailed, technical outputs (like monitoring plans, CI/CD steps, or business quantification).",
