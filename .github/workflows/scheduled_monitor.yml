@@ -1,4 +1,3 @@
-# .github/workflows/scheduled_monitor.yml
 name: Scheduled Monitoring and AutoML Crew (AutoGen)
 
 on:
@@ -14,18 +13,16 @@ jobs:
     
     # Define environment variables needed by the Python script
     env:
-      # We no longer need OLLAMA_BASE_URL, but we keep the secrets
-      
       # INJECT SECRETS FOR IMAP CONNECTION
       IMAP_SERVER: ${{ secrets.IMAP_SERVER }}
       IMAP_PORT: ${{ secrets.IMAP_PORT }}
       IMAP_USERNAME: ${{ secrets.IMAP_USERNAME }}
-      IMAP_APP_PASSWORD: ${{ secrets.IMAP_APP_PASSWORD }}
-      
+      IMAP_APP_PASSWORD: ${{ secrets.IMAP_PASSWORD }} # Ensure this matches your secret name
+
       # INJECT SECRETS FOR COMMUNICATION/MOCK
       CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
       
-      # INJECT SECRETS FOR GITHUB TOOL (USING SECURE, RENAMED SECRETS)
+      # INJECT SECRETS FOR GITHUB TOOL
       CREW_COMMIT_TOKEN: ${{ secrets.CREW_COMMIT_TOKEN }}
       REPO_OWNER: ${{ secrets.REPO_OWNER }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
@@ -42,8 +39,9 @@ jobs:
 
     - name: Install dependencies (Pip Install)
       run: |
-        # Use pip to install required packages, avoiding Poetry conflicts
-        pip install autogen>=0.2.14 python-dotenv pydantic requests imaplib2
+        # CRITICAL FIX: Install autogen with the [openai] extra dependency 
+        # to ensure the LLM client is correctly set up.
+        pip install "autogen[openai]>=0.2.14" python-dotenv pydantic requests imaplib2
         
     - name: Run Data Science Crew (AutoGen)
       run: |
