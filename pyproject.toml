@@ -1,4 +1,4 @@
-# pyproject.toml (LAST ATTEMPT AT DEPENDENCY STABILITY)
+# pyproject.toml (LAST, LAST, LAST ATTEMPT AT DEPENDENCY STABILITY)
 
 [tool.poetry]
 name = "automl-agent-crew"
@@ -12,12 +12,12 @@ readme = "README.md"
 # Python compatibility range (Kept as previously fixed)
 python = ">=3.11,<=3.13" 
 
-# FIX: Use caret constraints on the minor versions (e.g., ^0.33 means use 0.33.x)
-# This forces Poetry to find the latest published patch version.
-crewai = "^0.33.3" 
-crewai-tools = "^0.22.0" 
+# FIX: Use the minimum version and let Poetry find the LATEST published patch that works.
+# This bypasses the "doesn't match any versions" error.
+crewai = "^0.30" 
+crewai-tools = "^0.22" 
 
-# LangChain dependencies (Locked to compatible V0.2+ range)
+# LangChain dependencies (Locked to compatible V0.2+ range as required by CrewAI/CrewAI-Tools)
 langchain = ">=0.2.0,<0.3.0"
 langchain-community = ">=0.2.6,<0.3.0" 
 
