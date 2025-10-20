@@ -1,4 +1,4 @@
-# .github/workflows/scheduled_monitor.yml (FINAL CORRECTED VERSION)
+# .github/workflows/scheduled_monitor.yml (FINAL Ollama-Ready Version with CORRECT Secret Name)
 name: Scheduled Monitoring and AutoML Crew (AutoGen)
 
 on:
@@ -12,19 +12,37 @@ jobs:
   run_data_science_crew:
     runs-on: ubuntu-latest
     
+    # CRITICAL ADDITION: Define Ollama as a service container
+    services:
+      ollama:
+        image: ollama/ollama:latest
+        ports:
+          - 11434:11434
+        options: >
+          --health-cmd "ollama -v"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        command: serve
+
     # Define environment variables needed by the Python script
     env:
+      # OLLAMA_HOST and OLLAMA_MODEL for Ollama Service
+      OLLAMA_HOST: http://ollama:11434 
+      OLLAMA_MODEL: mistral 
+      
       # INJECT SECRETS FOR IMAP CONNECTION
       IMAP_SERVER: ${{ secrets.IMAP_SERVER }}
       IMAP_PORT: ${{ secrets.IMAP_PORT }}
       IMAP_USERNAME: ${{ secrets.IMAP_USERNAME }}
-      IMAP_APP_PASSWORD: ${{ secrets.IMAP_PASSWORD }} 
+      IMAP_APP_PASSWORD: ${{ secrets.IMAP_APP_PASSWORD }} 
 
       # INJECT SECRETS FOR COMMUNICATION/MOCK
       CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
       
       # INJECT SECRETS FOR GITHUB TOOL
-      CREW_COMMIT_TOKEN: ${{ secrets.CREW_COMMIT_TOKEN }}
+      # THIS IS THE CRITICAL FIX: Using the correct secret name
+      CREW_COMMIT_TOKEN: ${{ secrets.CREW_GITHUB_TOKEN }} 
       REPO_OWNER: ${{ secrets.REPO_OWNER }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
 
@@ -37,13 +55,31 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install dependencies (Pip Install)
+    - name: Wait for Ollama to be ready and Pull Model
       run: |
-        # CRITICAL FIX: Install autogen with the [openai] extra dependency 
-        # to correctly set up the LLM client, even for local LLMs.
-        pip install "autogen[openai]>=0.2.14" python-dotenv pydantic requests imaplib2
+        # Wait for the service to be healthy
+        while ! curl -s $OLLAMA_HOST/api/tags > /dev/null; do 
+          echo "Waiting for Ollama service..."
+          sleep 5
+        done
+        echo "Ollama service is ready."
         
+        # Pull the specified model (Mistral)
+        echo "Pulling $OLLAMA_MODEL model..."
+        ollama_pull_output=$(curl -s -X POST $OLLAMA_HOST/api/pull -d '{"name": "'"$OLLAMA_MODEL"'"}' --header 'Content-Type: application/json')
+        if echo "$ollama_pull_output" | grep -q "error"; then
+          echo "Error pulling model:"
+          echo "$ollama_pull_output"
+          exit 1
+        fi
+        echo "Model $OLLAMA_MODEL successfully pulled and loaded."
+
+
+    - name: Install dependencies
+      run: |
+        # Install autogen with the openai extra to communicate with Ollama's API
+        pip install "autogen[openai]>=0.2.14" python-dotenv pydantic requests imaplib2
+
     - name: Run Data Science Crew (AutoGen)
       run: |
-        # Execute the main autogen script
         python autogen_workflow.py
