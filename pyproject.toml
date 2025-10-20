@@ -10,21 +10,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 # Python compatibility range (Kept to satisfy the GitHub runner and CrewAI limits)
-python = ">=3.11,<=3.13" 
+python = ">=3.11,<=3.13"
 
-# CrewAI and CrewAI Tools versions (Set to latest stable to ensure V0.2+ compatibility)
-crewai = "^0.34" 
-crewai-tools = "^0.23"
+# CrewAI (latest stable; includes crewai-tools functionality)
+crewai = "^0.34"
 
-# CRITICAL FIX: Update LangChain to the V0.2+ range as required by the new CrewAI versions
-langchain = ">=0.2.0,<0.3.0"
-langchain-community = ">=0.2.6,<0.3.0" 
+# LangChain versions compatible with CrewAI v0.34+
+langchain = "0.2.12"
+langchain-community = "0.2.12"
 
-# Other dependencies
-pydantic = ">=2.0,<2.8" 
-python-dotenv = ">=1.0"
-imaplib2 = "^2.5" 
-
+# Pydantic and utilities (compatible with CrewAI + LangChain)
+pydantic = ">=2.5,<3.0"
+python-dotenv = "^1.0"
+imaplib2 = "^2.5"
 
 [build-system]
 requires = ["poetry-core"]
