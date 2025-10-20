@@ -1,4 +1,4 @@
-# autogen_workflow.py (AutoGen Workflow Orchestration)
+# autogen_workflow.py (AutoGen Workflow Orchestration - FINAL CORRECTED VERSION)
 import os
 from autogen import GroupChat, GroupChatManager
 from autogen_config import *
@@ -12,18 +12,17 @@ initial_task = "Initiate the 20-step AutoML pipeline. First, check the critical 
 
 
 # --- 2. Define Group Chat ---
-# AutoGen handles the complex task graph (your 20 tasks) through conversation.
-# The manager decides who speaks next based on the task state.
 autogen_group_chat = GroupChat(
     agents=agent_group,
     messages=[],
-    max_round=50, # Allow ample time for the conversation to complete the full 20-step task
+    max_round=50, 
     speaker_selection_method="auto"
 )
 
+# CRITICAL FIX: Use the MANAGER_LLM_CONFIG which excludes tools
 manager = GroupChatManager(
     groupchat=autogen_group_chat,
-    llm_config=LLM_CONFIG_MOCK,
+    llm_config=MANAGER_LLM_CONFIG,
     is_termination_msg=lambda x: "SUCCESS: Email successfully composed and SIMULATED" in x.get("content", "")
 )
 
