@@ -2,7 +2,7 @@
 name: Scheduled Monitoring and AutoML Crew
 
 on:
-  # Schedule: Runs the workflow every 5 minutes (Cron job equivalent)
+  # Schedule: Runs the workflow every 5 minutes
   schedule:
     - cron: '*/5 * * * *'
   # Allows manual run from the Actions tab
@@ -26,9 +26,9 @@ jobs:
       CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
       
       # INJECT SECRETS FOR GITHUB TOOL (USING SECURE, RENAMED SECRETS)
-      CREW_COMMIT_TOKEN: ${{ secrets.CREW_COMMIT_TOKEN }}
-      REPO_OWNER: ${{ secrets.REPO_OWNER }}
-      REPO_NAME: ${{ secrets.REPO_NAME }}
+      CREW_COMMIT_TOKEN: ${{ secrets.CREW_COMMIT_TOKEN }} # Renamed GITHUB_TOKEN
+      REPO_OWNER: ${{ secrets.REPO_OWNER }}                 # Renamed GITHUB_REPO_OWNER
+      REPO_NAME: ${{ secrets.REPO_NAME }}                   # Renamed GITHUB_REPO_NAME
 
     steps:
     - name: Checkout Repository
@@ -42,6 +42,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install poetry
+        # Requires pyproject.toml in the root directory
         poetry install --no-root
         
     - name: Pull and Run Ollama/Mistral LLM Service
@@ -49,7 +50,7 @@ jobs:
         # Start a local Ollama service in the background
         docker pull mistral
         docker run -d -v /usr/bin/ollama:/usr/bin/ollama -p 11434:11434 --name ollama-server ollama serve
-        # Wait a sufficient time for the service to start (increased for stability)
+        # Wait a sufficient time for the service to start
         sleep 45 
         
     - name: Run Data Science Crew
