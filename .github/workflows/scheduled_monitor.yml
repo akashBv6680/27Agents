@@ -18,13 +18,14 @@ jobs:
         image: ollama/ollama:latest
         ports:
           - 11434:11434
-        # CORRECTED SYNTAX: Only use options here.
-        options: >
+        # CRITICAL FIX: Changed from 'options: >' to 'options: |' to avoid 
+        # passing a trailing newline (\n) into the Docker health-retries argument.
+        options: |
           --health-cmd "ollama --version"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        # 💥 REMOVED: The problematic 'command: serve' line was removed.
+        # The problematic 'command: serve' line remains removed.
 
     # Define environment variables needed by the Python script
     env:
